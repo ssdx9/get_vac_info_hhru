@@ -6,7 +6,7 @@ from wordcloud import WordCloud, STOPWORDS
 def req_pag(kword,per_page):    
     r=requests.get('https://api.hh.ru/vacancies', 
         params={'text':kword, 'per_page':per_page})      
-    pages=1 #r.json()['pages']    
+    pages=r.json()['pages']    
     return pages
 
 #Получение вакансий
@@ -18,6 +18,7 @@ def req_vacs(kword,per_page,pages):
                 params={'text':kword, 
                         'per_page':per_page,
                         'page':p}).json()['items']                
+        print(f"Reading page {p} of {pages}")
         #Сохранение ссылок на каждую вакансию:
         for i in range(len(r)): 
             vacs.append(r[i]['url']) 
@@ -34,7 +35,8 @@ def file_kskills(vacs):
                     strraw = f"{kskills[index][key]}\n" 
                     strprep = strraw.replace(" ","_") #приведение каждой записи к n-грамме                    
                     text_file.write(strprep)
-            
+        print(f"Retrieving key skills from from vacancy {vac}")
+
 #Вывод из файла в WordCloud:
 def wc_kskills(kword):
     wctext = open('Outputtext.txt', encoding='utf-8').read()
@@ -50,13 +52,14 @@ def wc_kskills(kword):
     plt.imshow(wc, interpolation="bilinear") 
     plt.show()
 
-#Набор желаемых функций:
+#Набор функций:
 def getvacs():
     per_page = 100        
     kword = input ('Введите ключевое слово для поиска сопутствующих навыков:')
     pages = req_pag(kword,per_page)
     vacs = req_vacs(kword,per_page,pages)    
     file_kskills(vacs)
+    print(f"Preparing wordcloud...")
     wc_kskills(kword)
 
 getvacs()
