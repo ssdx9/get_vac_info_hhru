@@ -18,7 +18,7 @@ def req_vacs(kword,per_page,pages):
                 params={'text':kword, 
                         'per_page':per_page,
                         'page':p}).json()['items']                
-        print(f"Reading page {p} of {pages}")
+        print(f"Чтение страницы {p} из {pages}")
         #Сохранение ссылок на каждую вакансию:
         for i in range(len(r)): 
             vacs.append(r[i]['url']) 
@@ -29,13 +29,13 @@ def file_kskills(vacs):
     with open("Outputtext.txt", "w", encoding="utf-8") as text_file:        
         for vac in range(len(vacs)):
             det_vac=requests.get(vacs[vac]).json()
-            kskills=det_vac['key_skills']            
+            kskills=det_vac['key_skills']
+            print(f"Чтение вакансии {vac} из {len(vacs)}")            
             for index in range(len(kskills)):            
                 for key in kskills[index]:
                     strraw = f"{kskills[index][key]}\n" 
                     strprep = strraw.replace(" ","_") #приведение каждой записи к n-грамме                    
-                    text_file.write(strprep)
-        print(f"Retrieving key skills from from vacancy {vac}")
+                    text_file.write(strprep)        
 
 #Вывод из файла в WordCloud:
 def wc_kskills(kword):
@@ -47,7 +47,7 @@ def wc_kskills(kword):
                     collocations=False) #отключения поиска коллокаций для избежания ложного срабатывания
     wc.generate(wctext)
     
-    plt.title(f'"{kword}" - сопутствующие ключевые навыки')
+    plt.title(f'Сопутствующие ключевые навыки для "{kword}"')
     plt.axis("off")
     plt.imshow(wc, interpolation="bilinear") 
     plt.show()
@@ -56,10 +56,14 @@ def wc_kskills(kword):
 def getvacs():
     per_page = 100        
     kword = input ('Введите ключевое слово для поиска сопутствующих навыков:')
+    print('Получение ответа от HH.RU. Пожалуйста, подождите...')
     pages = req_pag(kword,per_page)
+    print('Извлечение вакансий. Пожалуйста, подождите...')
     vacs = req_vacs(kword,per_page,pages)    
+    print('Извлечение "Ключевых навыков" из вакансий. Пожалуйста, подождите...')
     file_kskills(vacs)
-    print(f"Preparing wordcloud...")
+    print('Подготовка WordCloud. Почти готово.')
     wc_kskills(kword)
+    print('Теперь точно готово!')
 
 getvacs()
