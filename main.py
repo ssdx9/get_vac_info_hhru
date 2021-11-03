@@ -18,7 +18,7 @@ def req_vacs(kword,per_page,pages):
                 params={'text':kword, 
                         'per_page':per_page,
                         'page':p}).json()['items']                
-        print(f"Чтение страницы {p} из {pages}")
+        print(f"Извлечение вакансий. Пожалуйста, подождите. Чтение страницы {p} из {pages}", end='\r')
         #Сохранение ссылок на каждую вакансию:
         for i in range(len(r)): 
             vacs.append(r[i]['url']) 
@@ -30,7 +30,7 @@ def file_kskills(vacs):
         for vac in range(len(vacs)):
             det_vac=requests.get(vacs[vac]).json()
             kskills=det_vac['key_skills']
-            print(f"Чтение вакансии {vac} из {len(vacs)}")            
+            print(f'Извлечение "Ключевых навыков" из вакансий. Пожалуйста, подождите. Чтение вакансии {vac} из {len(vacs)}', end='\r')            
             for index in range(len(kskills)):            
                 for key in kskills[index]:
                     strraw = f"{kskills[index][key]}\n" 
@@ -56,14 +56,14 @@ def wc_kskills(kword):
 def getvacs():
     per_page = 100        
     kword = input ('Введите ключевое слово для поиска сопутствующих навыков:')
-    print('Получение ответа от HH.RU. Пожалуйста, подождите...')
+    print('Получение ответа от HH.RU. Пожалуйста, подождите...', end='\r')
     pages = req_pag(kword,per_page)
-    print('Извлечение вакансий. Пожалуйста, подождите...')
-    vacs = req_vacs(kword,per_page,pages)    
-    print('Извлечение "Ключевых навыков" из вакансий. Пожалуйста, подождите...')
+    vacs = req_vacs(kword,per_page,pages)
     file_kskills(vacs)
-    print('Подготовка WordCloud. Почти готово.')
+    print(',                                                                                           ', end='\r') # переделать очистку строки
+    print('Подготовка WordCloud. Почти готово...', end='\r')
+    print(',                                                                                           ', end='\r') # переделать очистку строки
+    print('Готово!')
     wc_kskills(kword)
-    print('Теперь точно готово!')
 
 getvacs()
