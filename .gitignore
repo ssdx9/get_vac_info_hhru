@@ -1,2 +1,5 @@
-env_get_vac_info_hhru/
-Outputtext.txt
+get_vac_info_hhru/
+.vscode/
+.gitignore
+*.txt
+get_vac_info_hhru.core-workspace
